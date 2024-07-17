@@ -1,8 +1,8 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { privateProcedure, publicProcedure, router } from "./trpc";
-import { TRPCError } from "@trpc/server";
 import { db } from "@/db";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { privateProcedure, publicProcedure, router } from "./trpc";
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
     const { getUser } = getKindeServerSession();
@@ -83,6 +83,21 @@ export const appRouter = router({
         throw new TRPCError({ code: "NOT_FOUND" });
       }
       return file;
+    }),
+
+  getFileUploadStatus: privateProcedure
+    .input(z.object({ fileId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const file = await db.file.findFirst({
+        where: {
+          id: input.fileId,
+          userId: ctx.userId,
+        },
+      });
+      if (!file) {
+        return { status: "PENDING" as const };
+      }
+      return { status: file.uploadStatus };
     }),
 });
 

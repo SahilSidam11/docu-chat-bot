@@ -1,12 +1,11 @@
 import { Expand, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
+import { useResizeDetector } from "react-resize-detector";
 import SimpleBar from "simplebar-react";
 import { Button } from "./ui/button";
-import { Toast } from "./ui/toast";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { useToast } from "./ui/use-toast";
-import { useResizeDetector } from "react-resize-detector";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
